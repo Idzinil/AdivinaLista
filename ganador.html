@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Adivina Adivinador</title>
+
+    <style>
+    
+    </style>
+    
+</head>
+<body>
+    <lista-ganadora tamaniolista = '10'></lista-ganadora>
+
+    <script>
+    class ListaGanadora extends HTMLElement {
+        static get observedAttributes() {
+            return ['tamaniolista'];
+        }
+        //Ciclo de vida del Web Component, se ejecuta cuando se agrega al DOM
+        connectedCallback() {
+            console.log("Hola, entraste a connectedCallback()"); 
+        }
+
+        attributeChangedCallback(nameAttribute, oldValue, newValue) { 
+            console.log("Hola, entraste a attributeChangedCallback", nameAttribute, oldValue, newValue);
+            if (!this.shadow) {
+                this.shadow= this.attachShadow({mode: 'open'});
+            } else {
+                this.shadow.innerHTML = '';
+            }
+            if(nameAttribute === 'tamaniolista'){
+                let tamaniolista = prompt('Dame el número de elementos de la Lista: ') || newValue;
+                console.log('Nuevo valor de tamaniolista: ' + tamaniolista);
+                this.lista = [];
+                console.log("lista: " + this.lista);
+                this.numAleatorio = Math.round(Math.random()*(tamaniolista));
+                if(this.numAleatorio === 0){
+                    this.numAleatorio += 1;
+                } else {
+                    this.numAleatorio = this.numAleatorio;
+                }
+                console.log('numAleatorio: ' + this.numAleatorio);
+                for(let i = 0; i <= tamaniolista - 1; i++){
+                    if(i + 1 === this.numAleatorio){
+                        this.lista[i] = 1;
+                    } else {
+                        this.lista[i] = 0;
+                    }
+                let boton = document.createElement('button');
+                boton.textContent = ([i + 1]);
+                boton.addEventListener('click', () => this.onCellClick(i, boton));
+                boton.style = 'font-wheight: 800; font-size: 40px';
+                this.shadow.appendChild(boton);
+                }
+            }
+        }        
+        
+        onCellClick(indice, boton){ 
+            if(this.lista[indice] === 1){
+                boton.textContent = (':D');
+                boton.style = 'background-color: #55F9BA; font-wheight: 800; font-size: 40px';
+                setTimeout(function(){  alert("Ganaste!"); location.reload() }, 500);
+            } else {
+                alert("Intenta nuevamente");
+                boton.textContent = ('D:');
+                boton.style = 'background-color: #FB481A; font-wheight: 800; font-size: 40px';
+            }
+        console.log(indice, this.lista);
+        }
+    }
+    console.log('Juego creado');
+    customElements.define('lista-ganadora', ListaGanadora);
+    </script>
+</body>
+</html>
